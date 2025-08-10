@@ -1,5 +1,7 @@
 {
-  "version": 2,
+  "buildCommand": "cd client && npm install && npm run build",
+  "outputDirectory": "client/build",
+  "installCommand": "cd client && npm install",
   "functions": {
     "api/**/*.js": {
       "runtime": "nodejs18.x"
@@ -11,7 +13,7 @@
       "destination": "/api/$1"
     },
     {
-      "source": "/((?!api).*)",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
