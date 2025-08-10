@@ -1,0 +1,52 @@
+services:
+  # PostgreSQL Database
+  - type: pserv
+    name: crams-database
+    env: node
+    plan: free
+    region: oregon
+    databases:
+      - name: crams_db
+        user: crams_user
+
+  # Backend API Service
+  - type: web
+    name: crams-backend
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_URL
+        fromDatabase:
+          name: crams-database
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: CLIENT_URL
+        value: https://crams-frontend.onrender.com
+
+  # Frontend React App
+  - type: web
+    name: crams-frontend
+    env: static
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://crams-backend.onrender.com
